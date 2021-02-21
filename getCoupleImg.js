@@ -52,7 +52,7 @@ async function getPage(num, waitTime) {
     fs.mkdir('./coupleImg/' + mainTitle, () => {
       console.log("成功创建目录：" + './coupleImg/' + mainTitle);
     });
-    getImg(imgUrl, mainTitle,);
+    getImg(imgUrl, mainTitle);
   });
 };
 
