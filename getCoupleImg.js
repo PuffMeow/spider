@@ -48,11 +48,11 @@ async function getPage(num, waitTime) {
     imgUrl = imgUrl.substring(start, end);
     imgUrl = httpUrl + imgUrl;
     // console.log(mainTitle);
-    isExitDir('../coupleImg')
+    isExitDir('coupleImg')
     fs.mkdir('./coupleImg/' + mainTitle, () => {
       console.log("成功创建目录：" + './coupleImg/' + mainTitle);
     });
-    getImg(imgUrl, mainTitle,);
+    getImg(imgUrl, mainTitle);
   });
 };
 
