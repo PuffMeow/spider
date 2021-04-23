@@ -3,6 +3,7 @@ const axios = require('axios');
 const fs = require('fs');
 const isExitDir = require('./utils/isExistDir')
 const sleep = require('./utils/sleep')
+const { excludeSpecial } = require('./utils/utils')
 
 /************
  * 爬情侣头像用的脚本
@@ -25,12 +26,6 @@ async function getList(waitTime = 1000) {
   }
 }
 
-function excludeSpecial(s) {
-  // 去掉文件名的特殊字符（文件名不允许包含特殊字符）
-  s = s.replace(/[\||\“,，\'\"\\\/\b\f\n\r\t]/g, '');
-  s = s.replace(/[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g, '');
-  return s;
-};
 
 //获取页面内容
 async function getPage(num, waitTime) {
