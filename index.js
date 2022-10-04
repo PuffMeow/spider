@@ -13,12 +13,12 @@ const { excludeSpecial } = require("./utils/utils");
 getList();
 
 /**
- * 获取不同的页面数据
- * @param waitTime 爬取一个页面的间隔时间
+ * 获取不同页面的数据，默认获取30页
+ * @param waitTime 爬取一个页面的间隔时间，默认 2s
  */
-async function getList(waitTime = 1000) {
-  for (let i = 2; i < 50; i++) {
-    //爬慢点
+async function getList(waitTime = 2000) {
+  for (let i = 2; i < 30; i++) {
+    // 爬慢点
     await sleep(waitTime * i);
     getPage(i);
   }
@@ -27,19 +27,18 @@ async function getList(waitTime = 1000) {
 // 获取页面内容
 async function getPage(num, waitTime) {
   let httpUrl = `https://www.woyaogexing.com/touxiang/qinglv/index_${num}.html`;
-  let res = await axios.get(httpUrl);
-  let $ = cheerio.load(res.data);
-  //首页不需要传入num
+  const res = await axios.get(httpUrl);
+  const $ = cheerio.load(res.data);
+  // 首页不需要传入num
   httpUrl = httpUrl.replace(`/index_${num}.html`, "");
   $(".pMain .txList").each(async (i, element) => {
     await sleep(waitTime * i);
-    let mainTitle = await excludeSpecial($(element).find(".imgTitle").text());
+    const mainTitle = await excludeSpecial($(element).find(".imgTitle").text());
     let imgUrl = $(element).find(".img").attr("href");
-    let start = imgUrl.indexOf("/2021");
-    let end = imgUrl.length;
-    imgUrl = imgUrl.substring(start, end);
+    const currentYear = new Date().getFullYear();
+    const start = imgUrl.indexOf(`/${currentYear}`);
+    imgUrl = imgUrl.substring(start, imgUrl.length);
     imgUrl = httpUrl + imgUrl;
-    // console.log(mainTitle);
     isExitDir("coupleImg");
     fs.mkdir("./coupleImg/" + mainTitle, () => {
       console.log("成功创建目录：" + "./coupleImg/" + mainTitle);
@@ -50,21 +49,21 @@ async function getPage(num, waitTime) {
 
 // 用来获取图片的链接
 async function getImg(imgUrl, mainTitle) {
-  let res = await axios.get(imgUrl);
-  let $ = cheerio.load(res.data);
+  const res = await axios.get(imgUrl);
+  const $ = cheerio.load(res.data);
   $(".contMain .tx-img").each(async (i, element) => {
     await sleep(100 * i);
     let pageImgUrl = $(element).find("a").attr("href");
     pageImgUrl = "http:" + pageImgUrl;
-    let title = pageImgUrl.substring(39, 71);
+    const title = pageImgUrl.substring(39, 71);
     download(pageImgUrl, mainTitle, title);
   });
 }
 
 // 拿到链接之后通过文件流下载
 async function download(pageImgUrl, mainTitle, title) {
-  let res = await axios.get(pageImgUrl, { responseType: "stream" });
-  let ws = fs.createWriteStream(`./coupleImg/${mainTitle}/${title}.jpg`);
+  const res = await axios.get(pageImgUrl, { responseType: "stream" });
+  const ws = fs.createWriteStream(`./coupleImg/${mainTitle}/${title}.jpg`);
   res.data.pipe(ws);
   console.log("正在下载" + title);
   res.data.on("close", async () => {
