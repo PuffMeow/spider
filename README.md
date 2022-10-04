@@ -1,6 +1,6 @@
 ### cheerio爬虫
 
-`git clone https://github.com/JiquanWang99/spider.git`
+`git clone https://github.com/FacesPass/spider.git`
 
 本地开发时使用的是 `node 14.8` 版本
 
